@@ -1,4 +1,3 @@
-# -*- encoding: UTF-8 -*-
 # Run these commands in ROS terminal:
 # roscd skeleton_markers
 # rosrun rviz rviz -d markers.rviz
@@ -73,7 +72,6 @@ class Main(object):
 		self.port = port
 		self.start = time.time()
 		self.last = self.start
-		# self.fo = open("log.txt", "w")
 		self.fo = gzip.open("log.txt.gz", "w")
 		self._log = []
 		print self.ip, self.port
@@ -164,83 +162,14 @@ class Main(object):
 
 
 		# Pitch
-		# tuned
 		self.pitch_Kp = 0.60
 		self.pitch_Ki = 0.96
 		self.pitch_Kd = 0.09
 
-		# tuned 2
-		self.pitch_Kp = 0.78
-		self.pitch_Ki = 1.69
-		self.pitch_Kd = 0.09
-
-		# Pitch Oscillation
-		# self.pitch_Kp = 1.4
-		# self.pitch_Ki = 0.0
-		# self.pitch_Kd = 0.0
-
-		# Pitch ZN PID
-		self.pitch_Kp = 0.84
-		self.pitch_Ki = 0.50
-		self.pitch_Kd = 0.125
-
-		# Pitch ZN P
-		self.pitch_Kp = 0.7
-		self.pitch_Ki = 0.0
-		self.pitch_Kd = 0.0
-
-		# Pitch ZN PI
-		self.pitch_Kp = 0.63
-		self.pitch_Ki = 0.833
-		self.pitch_Kd = 0.0
-
-
-		# Pitch ZN PD
-		self.pitch_Kp = 0.75
-		self.pitch_Ki = 0.75
-		self.pitch_Kd = 0.06
-
-		# Pitch ZN PD
-		self.pitch_Kp = 0.0
-		self.pitch_Ki = 1.0
-		self.pitch_Kd = 0.0
-
-
-
-		# self.pitch_Kp = 1.40
-		# self.pitch_Ki = 0.0
-		# self.pitch_Kd = 0.0
-
-
-
-
-
 		# Roll
-		self.roll_Kp = 1.48
-		self.roll_Ki = 0.0
-		self.roll_Kd = 0.0
-
-		self.roll_Kp = 1.18
-		self.roll_Ki = 0.9
-		self.roll_Kd = 0.12
-
-		self.roll_Kp = 0.296
-		self.roll_Ki = 0.35
-		self.roll_Kd = 0.233
-
 		self.roll_Kp = 0.888
 		self.roll_Ki = 0.35
 		self.roll_Kd = 0.0875
-
-		# self.roll_Kp = 0.666
-		# self.roll_Ki = 0.583
-		# self.roll_Kd = 0.0
-
-		self.roll_Kp = 1.0
-		self.roll_Ki = 0.0
-		self.roll_Kd = 0.0
-
-
 
 		#  Debug
 		self.debug = []
@@ -271,15 +200,6 @@ class Main(object):
 
 				self.stdscr.addstr(1, 1, "Started. Hit 'q' to quit")
 				key = self.stdscr.getch()
-
-				# stdscr.addch(20, 25, key)
-				# if key == curses.KEY_UP:
-				# stdscr.addstr(2, 20, "Up")
-				# elif key == curses.KEY_DOWN:
-				# stdscr.addstr(3, 20, "Down")
-
-				#  List all available joints
-				# stdscr.addstr(7, 1, str(self.tf_listener.getFrameStrings()))
 
 				self.debug = []
 
@@ -315,15 +235,8 @@ class Main(object):
 		#self.postureProxy.goToPosture("Crouch", 1.0)
 		self.postureProxy.goToPosture("StandInit", 2.0)
 
-		# angles = [0.0, 0.0, -0.2, 0.5, -0.3, 0.0]
-		# angles = [0.0, -0.445, 0.0, 0.0, -0.0253, 0.445]
-		# a = 0.27			# roll start
-		# a = 0.402			# roll tune
-		a = 0.325			# roll zero
-		# a = 0.42			# roll end
-		# angles = [0.0, -a , 0.0, 0.0, -0.02, a ]			# single roll
+		a = 0.325			# zero roll
 		angles = [0.0, -a , 0.0, 0.0, 0.052, a ]			# single pitch
-		# angles = [0.0, 0.0, 0.0, 0.0, 0.031, 0.0]			# double pitch
 		if self.kinect_enabled:
 			angles = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 		t = 3.0
@@ -335,8 +248,6 @@ class Main(object):
 		t = 1.0
 		names = ["RHipYawPitch", "RHipRoll", "RHipPitch", "RKneePitch", "RAnklePitch", "RAnkleRoll"]
 		self.motionProxy.angleInterpolation(names, angles, times, True)
-
-		# self.fo.write(self.motionProxy.getSummary())
 
 		time.sleep(1)
 		self.start = time.time()
@@ -358,15 +269,7 @@ class Main(object):
 		#  Find image of torso on the x axis normalized for line between two feet
 		s = float((self.torso_w[0] - self.right_foot_w[0]) / (self.left_foot_w[0] - self.right_foot_w[0]))
 		s = clamp(s * 2.0 - 1.0, -1.0, 1.0)
-		# s = s * 2.0 - 1.0
 		sign_s = sign(s)
-		# if abs(s) > 1.0:
-		# 	s = sign_s + (s - sign_s) / 2.0
-
-		# if self.max_support_foot_tendency < abs(s):
-		# 	self.max_support_foot_tendency = clamp(abs(s), 1.0, 2.0)
-		# elif self.max_support_foot_tendency > 1.0:
-		# 	self.max_support_foot_tendency -= 0.5/20.0 * self.dt
 
 		s /= self.max_support_foot_tendency
 
@@ -380,12 +283,7 @@ class Main(object):
 		hipd = distance(self.left_hip_w, self.right_hip_w)
 		d = float((self.right_foot_w[0] - self.left_foot_w[0]) / hipd)
 		f = clamp((d - self.min_support_foot_bend) / (self.max_support_foot_bend - self.min_support_foot_bend), 0.0, 2.5)
-		# d = clamp(d, 0.0, 100.0)
 		self.support_foot_bend = abs(self.support_foot_tendency * f)
-		# self.support_foot_bend = 0.0
-
-		# if sign_s != sign(self.support_foot_tendency):
-		# 	self.support_foot_bend_rotation = 0.0
 
 		self.debug.append(self.support_foot_tendency)
 		self.debug.append(self.swing_leg_height)
@@ -465,8 +363,6 @@ class Main(object):
 			names = ["LShoulderPitch", "LShoulderRoll", "LElbowYaw", "LElbowRoll", "LWristYaw"]
 		limited = []
 
-		# hand_joints = np.array(hand_joints, dtype=float)
-
 		#  NAO Links:
 		l = [0.015, 0.105, 0.05595, 0.05775, 0.01231]
 		#  NAO Joint constraints:
@@ -483,11 +379,6 @@ class Main(object):
 		angles = [0.0, 0.0, 0.0, 0.0, 0.0]
 
 		#  Remap first joint to nao
-		# q = np.array([
-		# 	[1, 0,  0],
-		# 	[0, 0, 1],
-		# 	[0, -1, 0],
-		# ], dtype=float)
 		q = np.array([
 			[0, 0,  -1],
 			[0, -1, 0],
@@ -540,7 +431,6 @@ class Main(object):
 		], dtype=float)
 
 		v = hand_joints[1][:,np.newaxis]
-		# v = v * math.sqrt((l[2]+l[3])*(l[2]+l[3]) + l[4]*l[4]) / math.sqrt(v.dot(v))
 		v = v * l[2] / math.sqrt(v.T.dot(v))
 		p = q1.T.dot(q0.T.dot(q.T.dot(v)))
 
@@ -584,13 +474,9 @@ class Main(object):
 			angles[4] = j_max[4]-tolerance
 			limited.append(names[4])
 
-		# self.stdscr.addstr(7 + int(right_hand) * 4, 1, str(debug))
-		# print " ".join('%0.5f' % f for f in angles)
 		if len(limited) > 0:
 			self.stdscr.addstr(18 + int(right_hand), 1, "Joints limited: " + str(limited))
-			# return
 
-		# self.motionProxy.setAngles(names, angles, self.hand_speed)
 		self.send[1+int(right_hand)] = angles
 
 	def move_leg(self, leg_joints, right_leg=False):
@@ -626,9 +512,7 @@ class Main(object):
 		tolerance = 0.001
 
 		#  Angles to compute:
-		# angles = [0.0, -0.45, 0.0, 0.7, -0.10, 0.0]		#StandInit
 		angles = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-		# angles = [0.0, -0.2, 0.0, 0.5, 0.0, 0.0]
 
 		#  Remap first joint to nao
 		q = np.array([
@@ -657,16 +541,6 @@ class Main(object):
 			x = -p[1] / (l[0]*math.cos(angles[2]))
 			y = p[0] / (l[0]*math.cos(angles[2]))
 		angles[1] += math.atan2(y, x)
-
-		# if (right_leg and self.support_foot_tendency < 0.0) or (not right_leg and self.support_foot_tendency > 0.0):
-		# 	angles[1] +=  self.support_foot_bend * -0.2
-		#
-		# if right_leg:
-		# 	angles[1] -=  self.support_foot_bend * -0.2
-			# angles[1] += -0.2
-		# else:
-		# 	angles[1] +=  self.support_foot_bend * -0.2
-		# angles[1] += (right_leg and -1.0 or 1.0) *  self.support_foot_bend * -0.2
 
 		#  Check constraints
 		if angles[0] < j_min[0]+tolerance:
@@ -716,16 +590,6 @@ class Main(object):
 
 		angles[3] += math.atan2(y, x)
 
-		# if (right_leg and self.support_foot_tendency < 0.0) or (not right_leg and self.support_foot_tendency > 0.0):
-		# 	angles[3] +=  self.support_foot_bend * 0.5
-		# if right_leg:
-		# 	angles[3] -=  self.support_foot_bend * 0.5
-			# angles[3] += 0.5
-		# else:
-		# 	angles[3] +=  self.support_foot_bend * 0.5
-		# angles[3] += (right_leg and -1.0 or 1.0) *  self.support_foot_bend * 0.5
-
-
 		#  Check constraints
 		if angles[3] < j_min[3]+tolerance:
 			angles[3] = j_min[3]+tolerance
@@ -733,19 +597,6 @@ class Main(object):
 		if angles[3] > j_max[3]-tolerance:
 			angles[3] = j_max[3]-tolerance
 			limited.append(names[3])
-
-		# angles[4] = self.ankle_pitch
-
-		# if right_leg:
-		# 	angles[4] += -angles[1] -angles[3]
-		# else:
-		# 	angles[4] += -angles[1] -angles[3]
-
-		# if right_leg:
-		# 	angles[5] += -angles[2] + self.ankle_roll
-		# else:
-		# 	angles[5] += -angles[2] + self.ankle_roll
-
 
 		if angles[4] < j_min[4]+tolerance:
 			angles[4] = j_min[4]+tolerance
@@ -760,17 +611,13 @@ class Main(object):
 			angles[5] = j_max[5]-tolerance
 			limited.append(names[5])
 
-		# self.stdscr.addstr(7 + int(right_leg) * 4, 1, str(debug))
-		# self.stdscr.addstr(7 + int(right_leg) * 4, 1, " ".join('%0.5f' % f for f in angles))
 		if len(limited) > 0:
 			self.stdscr.addstr(16 + int(right_leg), 1, "Joints limited: " + str(limited))
-			# return
 
 		tmp = angles[1]
 		angles[1] = angles[2]
 		angles[2] = tmp
 
-		# self.motionProxy.setAngles(names, angles, self.leg_speed)
 		self.send[3+int(right_leg)] = angles
 
 	def update(self):
@@ -811,11 +658,6 @@ class Main(object):
 		if self.send is None:
 			self.send = angles[:]
 
-		# self.send[3] = [0.0, 0.0, -0.2, 0.5, -0.3, 0.0]
-		# self.send[4] = [0.0, 0.0, -0.2, 0.5, -0.3, 0.0]
-		# t = time.time() - self.start - 2.0
-		# self.support_foot_bend = clamp(5.0*t, 0.0, 2.0)
-
 		gx = self.memProxy.getData("Device/SubDeviceList/InertialSensor/AngleX/Sensor/Value")
 		gy = self.memProxy.getData("Device/SubDeviceList/InertialSensor/AngleY/Sensor/Value")
 		self.gravity[0] = self.gravity_alpha * gx + (1.0 - self.gravity_alpha) * self.gravity[0]
@@ -827,8 +669,6 @@ class Main(object):
 		self.test = angles[:]
 		self.test[3] = angles_command[3][:]
 		self.test[4] = angles_command[4][:]
-		# self.test[3] = list(angles[3] * np.array([0, 0, 0, 0, 1, 0], dtype=float))
-		# self.test[4] = list(angles[4] * np.array([0, 0, 0, 0, 1, 0], dtype=float))
 		self.test[3][4] = angles[3][4]
 		self.test[4][4] = angles[4][4]
 		self.test[3][5] = angles[3][5]
@@ -836,16 +676,7 @@ class Main(object):
 		self.nao.setTheta(self.test)
 
 		#  Update robot ground frame
-
-		#   Ground frame based on mean
-		# el = Euler(self.nao_init.left_leg.Q[-1].dot(self.nao.left_leg.Q[-1].T))
-		# er = Euler(self.nao_init.right_leg.Q[-1].dot(self.nao.right_leg.Q[-1].T))
-		# self.Q0toR = Rz((el[2]+er[2])/2).dot(Ry((el[1]+er[1])/2).dot(Rx((el[0]+er[0])/2)))
-		# self.Q0toR = Rz((el[2]+er[2])/2).dot(Ry((el[1]+er[1]+self.gravity[1])/3).dot(Rx((el[0]+er[0]+self.gravity[0])/3)))
-
-		#   Ground frame based on one foot
-		# self.Q0toR = Rz(el[2]).dot(Ry(el[1]).dot(Rx(el[0])))
-		# self.Q0toR = Rz(er[2]).dot(Ry(er[1]).dot(Rx(er[0])))
+		#   Ground frame based on best foot
 		if self.support_foot_tendency >= 0.0:
 			self.Q0toR = self.nao_init.left_leg.Q[-1].dot(self.nao.left_leg.Q[-1].T)
 		else:
@@ -885,10 +716,6 @@ class Main(object):
 			self.pitch_current = self.angles[4][4] - self.support_foot_bend * -0.25
 			self.roll_current = self.angles[4][5]
 
-		#  Remove y axis based on line between ankles
-		# v = self.nao.left_leg.P[5]-self.nao.right_leg.P[5]
-		# Q = Rz(math.atan2(v[0], v[1]))q[[0,2]]
-
 		#  Compute target theta
 		if self.support_foot_tendency >= 0.0:
 			Vankle = (self.Q0toR.dot(self.nao.left_leg.P[5]) + self.P0toR)
@@ -907,13 +734,6 @@ class Main(object):
 
 
 		self.stdscr.addstr(13, 1, "com r: %1.3f" % math.sqrt(r2))
-
-		# self.debug.append(com_theta)
-		# self.debug.append(sa_theta)
-		# self.debug.append(self.support_foot_tendency)
-		# self.debug.append(self.max_support_foot_tendency)
-		# self.debug.append(self.support_foot_bend)
-		# self.debug.append(self.ankle_roll)
 
 		self.pitch_target = self.pitch_current + sa_theta - com_theta
 
@@ -942,10 +762,6 @@ class Main(object):
 		self.pitch_command = self.pitch_current + cp
 
 		#   Ankle roll
-		# if self.single_support:
-		# 	ycom = (self.Q0toR.dot(self.nao.com) + self.P0toR)[1]
-		# 	error = self.support_area.mid.y - ycom
-		# else:
 		s = (self.support_foot_tendency + 1.0)/2.0
 		lf = (self.Q0toR.dot(self.nao.left_leg.P[-1]) + self.P0toR)[1] + 0.0053
 		rf = (self.Q0toR.dot(self.nao.right_leg.P[-1]) + self.P0toR)[1] - 0.0053
@@ -963,8 +779,6 @@ class Main(object):
 		t_theta = math.atan2(y, x)
 
 		error = com_theta - t_theta
-		# ycom = (self.Q0toR.dot(self.nao.com) + self.P0toR)[1]
-		# error = self.support_area.mid.y - ycom
 
 		self.stdscr.addstr(6, 1, "roll error: % 1.3f" % math.degrees(error))
 
@@ -986,8 +800,6 @@ class Main(object):
 		#  Apply
 		self.roll_target = self.roll_current + cr
 
-		# self.ankle_roll += float(t-cr) * self.roll_Kp
-
 		j_min = [-1.189516]
 		j_max = [0.922747]
 		tolerance = 0.001
@@ -998,7 +810,6 @@ class Main(object):
 				self.send[3][2] += self.support_foot_bend * -0.25
 				self.send[3][3] += self.support_foot_bend * 0.5
 				self.send[3][4] = self.angles[3][4] + cp
-				# self.send[3][4] = -0.021369
 				self.send[4][4] = self.send[3][4] + self.send[3][2] + self.send[3][3] - self.send[4][2] - self.send[4][3]
 				self.send[3][5] = self.angles[3][5] + float(cr)
 				self.send[4][5] = self.send[3][5] + self.send[3][1] - self.send[4][1]
@@ -1091,8 +902,6 @@ class Main(object):
 		#
 		log.append(self.debug)
 
-		# for d in log:
-		# 	self.fo.write(to_json(d) + ',\n')
 		if not first('log'):
 			self.fo.write(',\n')
 		self.fo.write(to_json(log))
@@ -1100,6 +909,7 @@ class Main(object):
 	def log_time(self):
 		"""Logs time for delay analysis"""
 		self._log.append(time.time() - self.start)
+
 
 _first_dict = {}
 def first(id):

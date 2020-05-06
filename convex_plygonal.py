@@ -2,27 +2,11 @@
 import math
 from operator import attrgetter
 
-def main():
-	# l1 = DirLine(Point(0,0),Point(1,0))
-	# print l1.get_point_distance(Point(0,-1))
-	# s = SupportArea(Point(0,0),Point(2,0),Point(2,2),Point(0,2))
-	# print s.is_inside_border(Point(1, 1.5), 0.5)
-
-	sa = ConvexPolygonal(Point(0, 0), Point(2, 2), Point(0, 2), Point(2, 0))
-	sa.set_scale(2)
-	sa.set_border(1)
-	print sa.is_inside(Point(1, 1))
-	print sa.get_distance(Point(11, 10))
-	print sa
-
-	# print type(np.array([]))
 
 class Point:
 	def __init__(self, x, y):
 		self.x = float(x)
 		self.y = float(y)
-		# self.x = x
-		# self.y = y
 
 	def __repr__(self):
 		return str((self.x, self.y))
@@ -44,6 +28,7 @@ class Point:
 
 	def distance(self, P):
 		return math.sqrt((self.x - P.x)**2 + (self.y - P.y)**2)
+
 
 class ConvexPolygonal:
 	def __init__(self, *args):
@@ -122,6 +107,7 @@ class ConvexPolygonal:
 	def __str__(self):
 		return "<scale=%d, border=%d, %s" % (self.scale, self.border, str(self.convex))
 
+
 def sign(x):
 	if x > 0:
 		return 1
@@ -129,13 +115,32 @@ def sign(x):
 		return -1
 	return 0
 
+
 def orientation(P0, P1, P2):
 	""" Returns < 0 if points are clockwise, = 0 if collinear, > 0 if ccw """
 	return (P1.x - P0.x) * (P2.y - P0.y) - (P2.x - P0.x) * (P1.y - P0.y)
+
 
 def distance(P0, P1, P2):
 	""" Returns the signed distance between P2 and P0P1 line, < 0 if points are clockwise and > 0 if ccw """
 	return orientation(P0, P1, P2) / math.sqrt((P1.x - P0.x)**2 + (P1.y - P0.y)**2)
 
+
+def test():
+	# l1 = DirLine(Point(0,0),Point(1,0))
+	# print l1.get_point_distance(Point(0,-1))
+	# s = SupportArea(Point(0,0),Point(2,0),Point(2,2),Point(0,2))
+	# print s.is_inside_border(Point(1, 1.5), 0.5)
+
+	sa = ConvexPolygonal(Point(0, 0), Point(2, 2), Point(0, 2), Point(2, 0))
+	sa.set_scale(2)
+	sa.set_border(1)
+	print sa.is_inside(Point(1, 1))
+	print sa.get_distance(Point(11, 10))
+	print sa
+
+	# print type(np.array([]))
+
+
 if __name__ == "__main__":
-	main()
+	test()

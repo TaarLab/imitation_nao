@@ -1,20 +1,7 @@
-# -*- encoding: UTF-8 -*-
 
 import numpy as np
 import math
 
-def main():
-	np.set_printoptions(precision=8, suppress=True)
-	nao = NaoKinematics()
-	chain = Chain([dh], com_pos, com_joint, link_mass, base_q, base_a)
-	nao.setTheta([[0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0]])
-	# print nao.left_hand.test()
-	# print time.clock()
-	# nao.setTheta([[0,0],[1,1,1,1,1],[0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0]])
-	# print time.clock()
-	#print nao.left_hand.test()
-	for t in nao.right_leg._com:
-		print t
 
 class NaoKinematics:
 	def __init__(self):
@@ -131,6 +118,7 @@ class NaoKinematics:
 
 		self.com = com / self.mass
 
+
 class Chain:
 	def __init__(self, dh, com_pos, com_joint, link_mass, base_q, base_a):
 		# check arguments for error
@@ -223,5 +211,20 @@ class Chain:
 		for i in range(self.len):
 			print (self.P[i + 1] + self.Q[i + 1].dot(self._com[i]))
 
+
+def test():
+	np.set_printoptions(precision=8, suppress=True)
+	nao = NaoKinematics()
+	chain = Chain([dh], com_pos, com_joint, link_mass, base_q, base_a)
+	nao.setTheta([[0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0]])
+	# print nao.left_hand.test()
+	# print time.clock()
+	# nao.setTheta([[0,0],[1,1,1,1,1],[0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0]])
+	# print time.clock()
+	#print nao.left_hand.test()
+	for t in nao.right_leg._com:
+		print t
+
+
 if __name__ == "__main__":
-	main()
+	test()

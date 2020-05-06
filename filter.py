@@ -1,16 +1,4 @@
 
-#
-
-def main():
-	class Test(object):
-		def __init__(self):
-			self.f = Filter(0.5)
-	t = Test()
-	t.f = 5.3
-	t.f = 5.0
-	t.f = 5.0
-	print t.f
-
 class Filter(object):
 	def __init__(self, alpha=1.0, initval=None):
 		self.val = initval
@@ -42,5 +30,17 @@ class Filter(object):
 			self.set(obj, val)
 		self.__set__ = self.set
 
+
+def test():
+	class Test(object):
+		def __init__(self):
+			self.f = Filter(0.5)
+	t = Test()
+	t.f = 5.3
+	t.f = 5.0
+	t.f = 5.0
+	print t.f
+
+
 if __name__ == "__main__":
-	main()
+	test()
